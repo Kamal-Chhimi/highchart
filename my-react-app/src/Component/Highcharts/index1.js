@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React , { useState, useEffect } from "react";
 import Paper from "@mui/material/Paper";
 import { closestCenter, DndContext } from "@dnd-kit/core";
 import MyStockChart from "./highchart1";
@@ -22,12 +21,12 @@ import {
   Select,
   MenuItem,
   IconButton,
-  Tooltip,
+  Button,
   Snackbar,
   Alert,
-  Button,
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
+import MiniDrawer from "../Home/SideBar";
 
 const SortablePaper = ({ id, activeId }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -42,7 +41,7 @@ const SortablePaper = ({ id, activeId }) => {
     backgroundColor: isDragging ? "#f1f1f1" : "transparent",
     margin: "1vh",
     position: "relative",
-    height: "38.5vh",
+    height: "36vh",
   };
 
   let chartComponent;
@@ -77,13 +76,7 @@ const SortablePaper = ({ id, activeId }) => {
       {...listeners}
       elevation={10}
     >
-      <Typography
-        variant="h4"
-        sx={{ float: "right", fontSize: "3.5vh", mt: "1vh", mr: "2.4vh" }}
-      >
-        {" "}
-        {id}{" "}
-      </Typography>
+        <Typography variant="h4" sx={{float:"right"}}> {id} </Typography>
       {chartComponent}
     </Paper>
   );
@@ -183,147 +176,117 @@ const Users1 = () => {
     setOpen(false);
   };
 
-  return (
-    <Box className="users">
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-around",
-          margin: "2vh 1vh",
-          flexDirection: "row",
-          border: "1px solid black",
-          borderRadius: "8px",
-          padding: "1vh",
-        }}
-      >
-        <Typography variant="h4" align="center" sx={{ fontSize: "5vh" }}>
-          Total: {papers.length}
-        </Typography>
 
-        {availableCharts.length > 0 ? (
+  return (
+    <Box className="users" sx={{display:"flex"}}>
+      <MiniDrawer />
+      <Box sx={{width:"100%"}}>
+
           <Box
             sx={{
               display: "flex",
               alignItems: "center",
-              justifyContent: "center",
+              justifyContent: "space-around",
+              margin: "1vh 1vh",
+              flexDirection: "row",
+              border: "1px solid black",
+              borderRadius: "8px",
+              padding:"1vh"
             }}
-          >
-            <Select
-              value=""
-              onChange={(e) => addChart(e.target.value)}
-              displayEmpty
-              renderValue={(selected) => {
-                if (!selected) {
-                  return <em>Select Chart</em>;
-                }
-                return selected;
-              }}
+            >
+            <Typography variant="h4" align="center">
+              Total: {papers.length}
+            </Typography>
+            
+                  {availableCharts.length > 0 ? (<Box
               sx={{
-                height: "6vh",
-                width: { xs: "40vw", sm: "10vw" },
-                fontSize: "2vh",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
-            >
-              <MenuItem
-                disabled
+              >
+                <Select
                 value=""
-                sx={{
-                  height: "5vh",
-                  width: { xs: "40vw", sm: "10vw" },
-                  fontSize: "2vh",
+                onChange={(e) => addChart(e.target.value)}
+                displayEmpty
+                renderValue={(selected) => {
+                  if (!selected) {
+                    return <em>Select Chart</em>;
+                  }
+                  return selected;
                 }}
-              >
-                <em>Select Chart</em>
-              </MenuItem>
-              {availableCharts.map((id) => (
-                <MenuItem
-                  key={id}
-                  value={id}
-                  sx={{
-                    height: "5vh",
-                    width: { xs: "40vw", sm: "10vw" },
-                    fontSize: "2vh",
-                  }}
+                sx={{height:"5vh"}}
                 >
-                  Chart {id}
+                <MenuItem disabled value="">
+                  <em>Select Chart</em>
                 </MenuItem>
-              ))}
-            </Select>{" "}
+                {availableCharts.map((id) => (
+                  <MenuItem key={id} value={id}>
+                    Chart {id}
+                  </MenuItem>
+                ))}
+              </Select> </Box>) : ""}
+              
+            
           </Box>
-        ) : (
-          ""
-        )}
-      </Box>
-      {papers.length > 0 ? (
-        <>
+          {papers.length > 0 ? (
+            <>
           <Box sx={{ padding: "1vh" }}>
-            <DndContext
-              collisionDetection={closestCenter}
-              onDragStart={onDragStart}
-              onDragEnd={onDragEnd}
-            >
-              <SortableContext
-                items={papers}
-                strategy={verticalListSortingStrategy}
-              >
-                <Grid container spacing={2}>
-                  {papers.map((paper, index) => {
-                    let gridColumn;
-                    if (index < 3) {
-                      gridColumn = 4;
-                    } else if (index < 5) {
-                      gridColumn = 6;
-                    } else {
-                      gridColumn = 12;
-                    }
-                    return (
-                      <Grid item xs={12} sm={gridColumn} key={paper.id}>
-                        <Box
-                          display="flex"
-                          alignItems="center"
-                          justifyContent="space-between"
-                          sx={{
-                            position: "absolute",
-                            zIndex: "10",
-                            margin: "2vh",
-                            display: isDragging ? "none" : "flex",
-                          }}
+          <DndContext
+                      collisionDetection={closestCenter}
+                      onDragStart={onDragStart}
+                      onDragEnd={onDragEnd}
+                      >
+                      <SortableContext
+                        items={papers}
+                        strategy={verticalListSortingStrategy}
                         >
-                          <Tooltip title="Delete">
-                            <IconButton
-                              style={{ zIndex: 10 }}
-                              onClick={() => {
-                                removeChart(paper.id);
-                                handleClick();
-                              }}
-                            >
-                              <Delete sx={{ fontSize: "3vh" }} />
-                            </IconButton>
-                          </Tooltip>
-                        </Box>
-
+            <Grid container spacing={2}>
+              {papers.map((paper, index) => {
+                let gridColumn;
+                if (index < 3) {
+                  gridColumn = 4;
+                } else if (index < 5) {
+                  gridColumn = 6;
+                } else {
+                  gridColumn = 12;
+                }
+                return (
+                  <Grid item xs={12} sm={gridColumn} key={paper.id}>
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="space-between"
+                      sx={{
+                        position: "absolute",
+                        zIndex: "10",
+                        margin: "2vh",
+                        display: isDragging ? "none" : "flex",
+                      }}
+                      >
+                      <IconButton
+                        style={{ zIndex: 10 }}
+                        onClick={() => {
+                          removeChart(paper.id);
+                          handleClick();
+                        }}
+                        >
+                        <Delete />
+                      </IconButton>
+                    </Box>
+  
+                   
                         <SortablePaper id={paper.id} activeId={activeId} />
-                      </Grid>
-                    );
-                  })}
-                </Grid>
-              </SortableContext>
-            </DndContext>
+                  </Grid>
+                );
+              })}
+            </Grid>
+                      </SortableContext>
+                    </DndContext>
           </Box>
         </>
       ) : (
-        <Typography
-          variant="h3"
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            height: "80vh",
-          }}
-        >
-          There is no data
-        </Typography>
+        <Typography variant="h3" sx={{display:"flex" , alignItems:"center" , justifyContent:"center", height:"80vh"}}>There is no data</Typography>
       )}
       <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>
         <Alert
@@ -336,12 +299,22 @@ const Users1 = () => {
               UNDO
             </Button>
           }
-        >
+          >
           Highchart deleted successfully
         </Alert>
       </Snackbar>
     </Box>
+    </Box>
   );
+  
 };
 
 export default Users1;
+
+
+//h sewe kel l highshart nafs l type , zabbetlo shaklo ykoun wadeh bas zagher l screen w kabbera .
+//2a3mel enno fiye zid features 3 kl highchart : fiye sewiya masalan k select option w be2dar ghayerl visualze lal data b albon..
+//masaln fiye b alb l paper khalle l user ymkin yemhe points...masalan ybatlo l line masouline b ba3d. ma ba33ref ye3ne features hek... 
+//ye3ne 2a3mel search 3ala l user's intercations li fiye zida 3al highchart
+//ma ba33ref kamen shu alet visual w ma visual
+

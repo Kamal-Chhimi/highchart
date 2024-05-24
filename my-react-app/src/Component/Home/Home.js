@@ -2,18 +2,18 @@ import { Box, Stack } from '@mui/material'
 import React from 'react'
 import RighBar from "./RightBar"
 import Feed from "./Feed"
-import SideBar from "./SideBar"
+import MiniDrawer from './SideBar'
+
 
 function Home() {
 
-  
   return (
    <Box>
-    <Stack direction="row" spacing={2} justifyContent="space-between">
-      <SideBar/>
+    <Box sx={{display:"flex" , position:"relative"}}>
+      <MiniDrawer />
       <Feed />
-      <RighBar />
-    </Stack>
+      <RighBar /> 
+    </Box>
    </Box>
   )
 }
