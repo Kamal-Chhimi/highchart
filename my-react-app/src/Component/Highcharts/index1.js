@@ -311,10 +311,12 @@ const Users1 = () => {
 
 export default Users1;
 
-
+//tole3 kl l badda howe zabet l design l ykouno wadhin visually zabtin/ fiye jarreb zabeton 3al zoom in zoom out bs ma aletle he  chi bl zabet
+//balke hatet enno l screen bs tozghar awl row ykoun fi two mesh three highchart
+//zabbet l sidebare enno bs tozghar l screnn te5tede , aw bl mobile view tsir position l ela absolute aw z-index high....
 //h sewe kel l highshart nafs l type , zabbetlo shaklo ykoun wadeh bas zagher l screen w kabbera .
+//badde shouf iza sta3malet highchart from the official website ia afdal aw la....balke tol3o artab w aktar visual
+
 //2a3mel enno fiye zid features 3 kl highchart : fiye sewiya masalan k select option w be2dar ghayerl visualze lal data b albon..
-//masaln fiye b alb l paper khalle l user ymkin yemhe points...masalan ybatlo l line masouline b ba3d. ma ba33ref ye3ne features hek... 
-//ye3ne 2a3mel search 3ala l user's intercations li fiye zida 3al highchart
-//ma ba33ref kamen shu alet visual w ma visual
+ //ma ba33ref kamen shu alet visual w ma visual
 

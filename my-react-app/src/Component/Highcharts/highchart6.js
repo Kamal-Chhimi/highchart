@@ -4,7 +4,18 @@ import HighchartsReact from 'highcharts-react-official'
 
 const options = {
   chart: {
-    polar: true
+    polar: true,
+    animation: true, // Enable chart animation
+    events: {
+      selection: function (event) {
+        // Handle selection start event
+        console.log('Selection start:', event.xAxis[0].min, event.xAxis[0].max);
+      },
+      selectionEnd: function (event) {
+        // Handle selection end event
+        console.log('Selection end:', event.xAxis[0].min, event.xAxis[0].max);
+      }
+    }
   },
   title: {
     text: 'My Polar Chart',
@@ -15,10 +26,10 @@ const options = {
   xAxis: {
     categories: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
     tickmarkPlacement: 'on',
-    lineWidth: 0,
+    lineWidth: 1,
     labels: {
       style: {
-        fontSize: '1.2vh' // Set font size for x-axis labels
+        fontSize: '1.4vh' // Set font size for x-axis labels
       }
     }
   },
@@ -49,7 +60,7 @@ const options = {
     dataLabels: {
       enabled: true,
       style: {
-        fontSize: '2vh' // Set font size for data labels
+        fontSize: '1.5vh' // Set font size for data labels
       }
     }
   }],
