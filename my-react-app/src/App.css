@@ -1,0 +1,17 @@
+/* Highcharts context button (exporting button) */
+.highcharts-contextbutton {
+    fill: #4CAF50; /* Change the fill color */
+    stroke: #4CAF50; /* Change the stroke color */
+    cursor: pointer; /* Change cursor to pointer */
+}
+
+/* Highcharts button hover state */
+.highcharts-contextbutton:hover {
+    fill: #45a049; /* Change fill color on hover */
+    stroke: #45a049; /* Change stroke color on hover */
+}
+
+/* Highcharts button symbol (icon) */
+.highcharts-contextbutton .highcharts-button-symbol {
+    fill: white; /* Change the icon color */
+}

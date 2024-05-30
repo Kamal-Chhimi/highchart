@@ -29,8 +29,7 @@ const SortablePaper = ({ id, activeId }) => {
       cursor: "grab", 
       backgroundColor: isDragging ? "#f1f1f1" : "transparent", 
       margin:"2vh", 
-    //   width:"20vw",
-    //   height:"60vh",
+    
     };
   
     let chartComponent;

@@ -25,27 +25,38 @@ import ContactMailIcon from '@mui/icons-material/ContactMail';
 import { useRecoilState } from "recoil";
 import { drawerState } from "../../GlobalState";
 import { Link } from 'react-router-dom';
+import { useMediaQuery } from '@mui/material';
 
-const drawerWidth = 240;
+const drawerWidth = 55;
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
+  height:"91vh",
   transition: theme.transitions.create('width', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.enteringScreen,
   }),
   overflowX: 'hidden',
+  [theme.breakpoints.down('sm')]: {
+    width: '100%',
+    height:"100%"
+  },
+  [theme.breakpoints.up('md')]: {
+    width: 200,
+  },
 });
 
+
 const closedMixin = (theme) => ({
+  height:"91vh",
   transition: theme.transitions.create('width', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
   overflowX: 'hidden',
-  width: `calc(${theme.spacing(7)} + 1px)`,
-  [theme.breakpoints.up('sm')]: {
-    width: `calc(${theme.spacing(8)} + 1px)`,
+  width: "0",
+  [theme.breakpoints.up('md')]: {
+    width: 65,
   },
 });
 
@@ -89,22 +100,36 @@ export default function MiniDrawer() {
   const theme = useTheme();
   const [open, setOpen] = useRecoilState(drawerState);
 
+  const isMdOrSmaller = useMediaQuery(theme.breakpoints.down('md'));
+  const isSMOrSmaller = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const handleDrawerToggle = () => {
+    setOpen(!open);
+  };
+
   return (
-    <Box sx={{ display: 'flex', marginTop: "9h", position: "relative" }}>
+    <Box sx={{ display: 'flex', marginTop: "9h", position: isSMOrSmaller ? "absolute" : "relative", width: isSMOrSmaller ? "100%" : "200" }}>
+      <CssBaseline />
+      <AppBar position="fixed" open={open}>
+      </AppBar>
       <Drawer variant="permanent" open={open} sx={{
         '& .MuiPaper-root': {
           position: 'relative',
+          backgroundColor: "white",
+          borderRight: "1.5px solid #115293 ",
+          ...(isSMOrSmaller && { width: '100%', zIndex: 50 }),
         },
       }}>
+        <Divider />
         <List>
           {[
             { text: 'Home', icon: <HomeIcon />, link: '/home' },
             { text: 'Highcharts', icon: <BarChartIcon />, link: '/page1' },
-            { text: 'Services', icon: <BuildIcon />, link: '/services' },
+            { text: 'Services', icon: <BuildIcon />, link: '/grid' },
             { text: 'Career', icon: <WorkIcon />, link: '/career' }
           ].map((item, index) => (
-              <Link to={item.link} style={{ textDecoration: 'none', color: 'inherit' }}>
-            <ListItem key={item.text} disablePadding sx={{ display: 'block' }}>
+            <Link to={item.link} key={item.id || index} style={{ textDecoration: 'none', color: 'inherit' }}  {...(isSMOrSmaller && { onClick: () => setOpen(!open) })}>
+              <ListItem key={item.text} disablePadding sx={{ display: 'block' }}>
                 <ListItemButton
                   sx={{
                     minHeight: 48,
@@ -123,8 +148,8 @@ export default function MiniDrawer() {
                   </ListItemIcon>
                   <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0 }} />
                 </ListItemButton>
-            </ListItem>
-              </Link>
+              </ListItem>
+            </Link>
           ))}
         </List>
         <Divider />

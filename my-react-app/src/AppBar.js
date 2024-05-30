@@ -19,6 +19,7 @@ import MoreIcon from "@mui/icons-material/MoreVert";
 import { useRecoilState } from "recoil";
 import { drawerState } from "./GlobalState";
 import { Menu } from "@mui/material";
+import { MenuOpen } from "@mui/icons-material";
 
 
 const Search = styled("div")(({ theme }) => ({
@@ -63,11 +64,14 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function PrimarySearchAppBar() {
+
+export default function PrimarySearchAppBar()
+{
+  
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [open, setOpen] = useRecoilState(drawerState);
-  console.log(open)
 
   const location = useLocation();
 
@@ -180,15 +184,17 @@ export default function PrimarySearchAppBar() {
             display: "flex",
             justifyContent: "center",
             padding: "1vh",
+            borderBottom: "1px solid #63a4ff ",
+            backgroundColor:"#115293 "
           }}
         >
           <Toolbar>
           <IconButton
-    sx={{ display: "block" , ml:"-1.2vw" }}
-    onClick={() => setOpen(!open)}
-  >
-      <MenuIcon />
-      </IconButton>
+              sx={{ display: "block", ml: "-1.2vw" }}
+              onClick={() => setOpen(!open)}
+            >
+              {open ? <MenuOpen sx={{ fontSize: "4vh" , color:"white" }} /> : <MenuIcon sx={{fontSize:"4vh" , color:"white"}} />}
+            </IconButton>
             <Typography
               variant="h6"
               noWrap

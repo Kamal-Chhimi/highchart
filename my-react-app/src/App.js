@@ -8,6 +8,7 @@ import Users1 from './Component/Highcharts/index1';
 // import Users from './Component/Highcharts/Index';
 import Home from './Component/Home/Home';
 import PrimarySearchAppBar from './AppBar';
+import Grids from './Component/Grid/Grid';
 
 
 
@@ -23,6 +24,7 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/page1" element={<DndProvider backend={HTML5Backend}>  <Users1 />  </DndProvider>} />
           {/* <Route path="/page2" element={<DndProvider backend={HTML5Backend}>  <Users />  </DndProvider>} /> */}
+          <Route path="/grid" element={<Grids />} />
           <Route path="/home" element={<Home />} />
         </Routes>
       </Router>

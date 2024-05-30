@@ -1,70 +1,78 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
+import HighchartsExporting from 'highcharts/modules/exporting';
+import HighchartsFullscreen from 'highcharts/modules/full-screen';
+import highchartsExportData from 'highcharts/modules/export-data'; 
+import HighchartsAccessibility from 'highcharts/modules/accessibility';
+import HighchartsOfflineExporting from 'highcharts/modules/offline-exporting';
+import HighchartsColorAccessibility from 'highcharts/modules/accessibility';
+import '../../App.css';
 
-const barChartOptions = {
-  chart: {
-    type: 'bar'
-  },
-  title: {
-    text: 'Bar Chart',
-    style: {
-      fontSize: '3vh', // Change the font size of the title
-    },
-  },
-  xAxis: {
-    labels: {
-      style: {
-        fontSize: '2vh', // Change the font size of the x-axis labels
-      },
-    },
-  },
-  yAxis: {
-    labels: {
-      style: {
-        fontSize: '2vh', // Change the font size of the y-axis labels
-      },
-    },
-    title: {
-      style: {
-        fontSize: '2vh', // Change the font size of the y-axis title
-      },
-    },
-  },
-  legend: {
-    itemStyle: {
-      fontSize: '2vh', // Change the font size of the legend items
-    },
-  },
-  series: [{
-    data: [5, 3, 4, 7, 2],
-    dataLabels: {
-      enabled: true,
-      style: {
-        fontSize: '2vh', // Change the font size of the data labels
-      },
-    },
-  }],
-  plotOptions: {
-    series: {
-      dataLabels: {
-        enabled: true,
-        style: {
-          fontSize: '2vh', // Change the font size of the data labels
+HighchartsColorAccessibility(Highcharts);
+HighchartsOfflineExporting(Highcharts);
+HighchartsAccessibility(Highcharts);
+highchartsExportData(Highcharts);
+HighchartsExporting(Highcharts);
+HighchartsFullscreen(Highcharts);
+
+const ColumnChartWithNegativeValues = ({ chartKey }) => {
+    const [chartData, setChartData] = useState(null);
+
+    useEffect(() => {
+        fetch('/chartsData.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => setChartData(data.columnChartWithNegativeValues))
+            .catch(error => console.error('Error fetching data:', error));
+    }, []);
+
+    if (!chartData) {
+        return <div>Loading...</div>;
+    }
+
+    const chartOptions = {
+        chart: {
+            type: 'column'
         },
-      },
-    },
-  },
+        title: {
+            text: chartData.title,
+            style: {
+                fontSize: '2.5vh'
+            }
+        },
+        xAxis: {
+            categories: chartData.categories,
+            labels: {
+                style: {
+                    fontSize: '1.8vh'
+                }
+            }
+        },
+        credits: {
+            enabled: false
+        },
+        plotOptions: {
+            column: {
+                borderRadius: '25%'
+            }
+        },
+        series: chartData.series
+    };
+
+    return (
+        <div style={{ height: '100%', width: '100%' }}>
+            <HighchartsReact
+                highcharts={Highcharts}
+                options={chartOptions}
+                containerProps={{ style: { height: '100%', width: '100%' } }}
+            />
+        </div>
+    );
 };
 
-const MyBarChart = () => (
-  <div style={{ width: '100%', height: '90%' }}>
-    <HighchartsReact
-      highcharts={Highcharts}
-      options={barChartOptions}
-      containerProps={{ style: { width: '100%', height: '95%' } }}
-    />
-  </div>
-);
-
-export default MyBarChart;
+export default ColumnChartWithNegativeValues;

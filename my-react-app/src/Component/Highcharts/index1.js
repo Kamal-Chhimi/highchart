@@ -1,12 +1,6 @@
-import React , { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Paper from "@mui/material/Paper";
 import { closestCenter, DndContext } from "@dnd-kit/core";
-import MyStockChart from "./highchart1";
-import MyLineChart from "./highchart2";
-import MyBarChart from "./highchart3";
-import MyAreaChart from "./highchart5";
-import MyPieChart from "./highchart4";
-import MyPolarChart from "./highchart6";
 import {
   arrayMove,
   SortableContext,
@@ -24,45 +18,57 @@ import {
   Button,
   Snackbar,
   Alert,
+  useMediaQuery,
+  useTheme,
+  Divider
 } from "@mui/material";
 import { Delete } from "@mui/icons-material";
 import MiniDrawer from "../Home/SideBar";
+import { drawerState } from "../../GlobalState";
+import { useRecoilValue } from "recoil";
+import TemperatureVariationChart from "./highchart1";
+import MyColumnChart from "./highchart2";
+import ColumnChartWithNegativeValues from "./highchart3";
+import PieChartResponsive from "./highchart4";
+import EmissionsChart from "./highchart5";
+import PieChart3DResponsive from "./highchart6";
+// import SmartphoneShipmentsChart from "./highchart7";
+import backgroundImage from '../../back.webp';
 
-const SortablePaper = ({ id, activeId }) => {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id });
+const SortablePaper = ({ id, activeId, isDraggable }) => {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
   const transitionDuration = transition ? transition.duration : 0;
   const isDragging = activeId === id;
   const style = {
     transition: `transform ${transitionDuration}ms ease-in-out, background-color ${transitionDuration}ms ease-in-out`,
     transform: CSS.Transform.toString(transform),
-    // padding: "1vh",
-    cursor: "grab",
+    cursor: isDraggable ? "grab" : "pointer",
     backgroundColor: isDragging ? "#f1f1f1" : "transparent",
-    margin: "1vh",
+    margin: "1vh 2vh",
     position: "relative",
-    height: "36vh",
+    height: "38vh",
+    boxShadow: "10px 4px 8px rgba(0, 0, 0, 0.1)",
   };
 
   let chartComponent;
   switch (id) {
     case "1":
-      chartComponent = <MyStockChart />;
+      chartComponent = <TemperatureVariationChart />;
       break;
     case "2":
-      chartComponent = <MyLineChart />;
+      chartComponent = <MyColumnChart />;
       break;
     case "3":
-      chartComponent = <MyBarChart />;
-      break;
-    case "5":
-      chartComponent = <MyAreaChart />;
+      chartComponent = <ColumnChartWithNegativeValues />;
       break;
     case "4":
-      chartComponent = <MyPieChart />;
+      chartComponent = <PieChartResponsive />;
+      break;
+    case "5":
+      chartComponent = <EmissionsChart />;
       break;
     case "6":
-      chartComponent = <MyPolarChart />;
+      chartComponent = <PieChart3DResponsive />;
       break;
     default:
       chartComponent = null;
@@ -74,9 +80,8 @@ const SortablePaper = ({ id, activeId }) => {
       style={style}
       {...attributes}
       {...listeners}
-      elevation={10}
+      elevation={20}
     >
-        <Typography variant="h4" sx={{float:"right"}}> {id} </Typography>
       {chartComponent}
     </Paper>
   );
@@ -98,11 +103,24 @@ const Users1 = () => {
   });
   const [activeId, setActiveId] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [open, setOpen] = React.useState(false);
+  const [isDraggable, setIsDraggable] = useState(() => {
+    const savedIsDraggable = localStorage.getItem("isDraggable");
+    return savedIsDraggable ? JSON.parse(savedIsDraggable) : false;
+  });
+  const [open, setOpen] = useState(false);
+  const theme = useTheme();
+  const isSMOrSmaller = useMediaQuery(theme.breakpoints.down('sm'));
+  const isSideBarOpen = useRecoilValue(drawerState);
+  const isMDOrSmaller = useMediaQuery(theme.breakpoints.down('lg'));
+
 
   useEffect(() => {
     localStorage.setItem("papers", JSON.stringify(papers));
   }, [papers]);
+
+  useEffect(() => {
+    localStorage.setItem("isDraggable", JSON.stringify(isDraggable));
+  }, [isDraggable]);
 
   const onDragStart = (event) => {
     setActiveId(event.active.id);
@@ -129,10 +147,9 @@ const Users1 = () => {
   };
 
   const addChart = (id) => {
-    if (id) {
-      setPapers([...papers, { id }]);
-    }
-  };
+  setPapers((prevPapers) => [...prevPapers, { id }]);
+};
+
 
   const removeChart = (id) => {
     const deletedIndex = papers.findIndex((paper) => paper.id === id);
@@ -177,116 +194,155 @@ const Users1 = () => {
   };
 
 
-  return (
-    <Box className="users" sx={{display:"flex"}}>
-      <MiniDrawer />
-      <Box sx={{width:"100%"}}>
+ return (
+  <Box className="users" sx={{ display: "flex"  ,backgroundColor:"#e2e3e1"}}>
+    <MiniDrawer />
+    <Box sx={{ width: "100%", display: isSMOrSmaller && isSideBarOpen && "none" }}>
 
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-around",
-              margin: "1vh 1vh",
-              flexDirection: "row",
-              border: "1px solid black",
-              borderRadius: "8px",
-              padding:"1vh"
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          margin: "0vh 0vh",
+          flexDirection: "row",
+          padding: "1vh",
+          backgroundColor:"white",
+          height:"6vh"
+        }}
+      >
+        <Typography sx={{fontSize:"3.5vh" , marginLeft:"2.1vh"}} align="center">
+          Total: {papers.length}
+        </Typography>
+
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" , fontSize:"2.4vh" , padding:"1vh"}}>
+        {availableCharts.length > 0 ? (<Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Select
+            value=""
+            onChange={(e) => addChart(e.target.value)}
+            displayEmpty
+            renderValue={(selected) => {
+              if (!selected) {
+                return <em>Select Chart</em>;
+              }
+              return selected;
             }}
-            >
-            <Typography variant="h4" align="center">
-              Total: {papers.length}
-            </Typography>
-            
-                  {availableCharts.length > 0 ? (<Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              >
-                <Select
-                value=""
-                onChange={(e) => addChart(e.target.value)}
-                displayEmpty
-                renderValue={(selected) => {
-                  if (!selected) {
-                    return <em>Select Chart</em>;
-                  }
-                  return selected;
-                }}
-                sx={{height:"5vh"}}
-                >
-                <MenuItem disabled value="">
-                  <em>Select Chart</em>
-                </MenuItem>
-                {availableCharts.map((id) => (
-                  <MenuItem key={id} value={id}>
-                    Chart {id}
-                  </MenuItem>
-                ))}
-              </Select> </Box>) : ""}
-              
-            
-          </Box>
-          {papers.length > 0 ? (
-            <>
-          <Box sx={{ padding: "1vh" }}>
+            sx={{ height: "5vh" , margin:"0vh 1vh" }}
+          >
+            <MenuItem disabled value="">
+              <em>Select Chart</em>
+            </MenuItem>
+            {availableCharts.map((id) => (
+              <MenuItem key={id} value={id}>
+                Chart {id}
+              </MenuItem>
+            ))}
+          </Select>  </Box>) : ""}
+          <Divider  orientation="vertical" flexItem/>
+          <label style={{marginLeft:"5px"}}>
+            Enable Drag and Drop
+          </label>
+          <input
+            type="checkbox"
+            checked={isDraggable}
+            onChange={(e) => setIsDraggable(e.target.checked)}
+          />
+        </Box>
+
+      </Box>
+      <Divider />
+      {isDraggable ? (
+        <Box sx={{ padding: "1vh" }}>
           <DndContext
-                      collisionDetection={closestCenter}
-                      onDragStart={onDragStart}
-                      onDragEnd={onDragEnd}
-                      >
-                      <SortableContext
-                        items={papers}
-                        strategy={verticalListSortingStrategy}
-                        >
-            <Grid container spacing={2}>
-              {papers.map((paper, index) => {
-                let gridColumn;
-                if (index < 3) {
-                  gridColumn = 4;
-                } else if (index < 5) {
-                  gridColumn = 6;
-                } else {
-                  gridColumn = 12;
-                }
-                return (
-                  <Grid item xs={12} sm={gridColumn} key={paper.id}>
-                    <Box
-                      display="flex"
-                      alignItems="center"
-                      justifyContent="space-between"
-                      sx={{
-                        position: "absolute",
-                        zIndex: "10",
-                        margin: "2vh",
-                        display: isDragging ? "none" : "flex",
-                      }}
-                      >
-                      <IconButton
-                        style={{ zIndex: 10 }}
-                        onClick={() => {
-                          removeChart(paper.id);
-                          handleClick();
+            collisionDetection={closestCenter}
+            onDragStart={onDragStart}
+            onDragEnd={onDragEnd}
+          >
+            <SortableContext
+              items={papers}
+              strategy={verticalListSortingStrategy}
+            >
+              <Grid container spacing={2}>
+                {papers.map((paper, index) => {
+                  let gridColumn;
+                  if (index < 3) {
+                    gridColumn = 4;
+                  } else if (index < 5) {
+                    gridColumn = 6;
+                  } else {
+                    gridColumn = 12;
+                  }
+
+                  return (
+                    <Grid item xs={12} sm={isMDOrSmaller ? 6 : gridColumn} key={paper.id}>
+                      <Box
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        sx={{
+                          position: "absolute",
+                          zIndex: "10",
+                          margin: "2vh",
+                          display: isDragging ? "none" : "flex",
                         }}
-                        >
-                        <Delete />
-                      </IconButton>
-                    </Box>
-  
-                   
-                        <SortablePaper id={paper.id} activeId={activeId} />
-                  </Grid>
-                );
-              })}
-            </Grid>
-                      </SortableContext>
-                    </DndContext>
-          </Box>
-        </>
+                      >
+                      </Box>
+                      <SortablePaper id={paper.id} activeId={activeId} isDraggable={isDraggable} />
+                    </Grid>
+                  );
+                })}
+              </Grid>
+            </SortableContext>
+          </DndContext>
+        </Box>
       ) : (
-        <Typography variant="h3" sx={{display:"flex" , alignItems:"center" , justifyContent:"center", height:"80vh"}}>There is no data</Typography>
+        <Box sx={{ padding: "1vh" }}>
+          <Grid container spacing={2}>
+            {papers.map((paper, index) => {
+              let gridColumn;
+              if (index < 3) {
+                gridColumn = 4;
+              } else if (index < 5) {
+                gridColumn = 6;
+              } else {
+                gridColumn = 12;
+              }
+
+              return (
+                <Grid item xs={12} sm={isMDOrSmaller ? 6 : gridColumn} key={paper.id}>
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    sx={{
+                      position: "absolute",
+                      zIndex: "10",
+                      margin: "1.3vh 2vh",
+                      display: isDragging ? "none" : "flex",
+                    }}
+                  >
+                    <IconButton
+                      style={{ zIndex: 10 }}
+                      onClick={() => {
+                        removeChart(paper.id);
+                        handleClick();
+                      }}
+                    >
+                      <Delete />
+                    </IconButton>
+                  </Box>
+                  <SortablePaper id={paper.id} activeId={activeId} isDraggable={isDraggable} />
+                </Grid>
+              );
+            })}
+          </Grid>
+        </Box>
       )}
       <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>
         <Alert
@@ -299,13 +355,14 @@ const Users1 = () => {
               UNDO
             </Button>
           }
-          >
+        >
           Highchart deleted successfully
         </Alert>
       </Snackbar>
     </Box>
-    </Box>
-  );
+  </Box>
+);
+
   
 };
 
