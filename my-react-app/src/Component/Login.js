@@ -105,15 +105,15 @@ function Login() {
     minHeight: '70vh',
     maxHeight: '72vh',
     minWidth: '23vw',
-    maxWidth: '23vw',
+    maxWidth: '90vw',
     background: '#e4e4f7',
     display: 'flex',
     flexDirection: 'column',
-  };
+    };
   
 
   const avatarStyle = { background: "#1975d1" , width : "3vw" ,  height:"6vh" };
-  const btStyle = { margin: '0.5vh 0vh', fontWeight: "bold", fontSize: "2vh" , height:"6vh" , padding:"0px" };
+  const btStyle = { margin: '0.5vh 0vh', fontWeight: "bold", fontSize: "2vh" , height:"6vh" , padding:"0px"};
 
   return (
     <div className={classes.root}>
